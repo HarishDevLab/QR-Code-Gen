@@ -1,0 +1,190 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>QR Code Generator</title>
+    <script src="https://cdn.jsdelivr.net/npm/qr-code-styling/lib/qr-code-styling.min.js"></script>
+    <style>
+        /* Improved CSS with better responsive design */
+        body {
+            font-family: Arial, sans-serif;
+            text-align: center;
+            margin: 20px;
+            background-color: #f0f4f8;
+        }
+        .container {
+            max-width: 600px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: white;
+            border-radius: 12px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+        input {
+            width: 90%;
+            max-width: 400px;
+            padding: 12px;
+            margin: 15px 0;
+            font-size: 16px;
+            border: 2px solid #2196F3;
+            border-radius: 8px;
+            transition: border-color 0.3s ease;
+        }
+        input:focus {
+            outline: none;
+            border-color: #006400;
+        }
+        button {
+            padding: 12px 24px;
+            font-size: 16px;
+            cursor: pointer;
+            background-color: #2196F3;
+            color: white;
+            border: none;
+            border-radius: 8px;
+            transition: all 0.3s ease;
+            margin: 10px;
+        }
+        button:hover {
+            background-color: #006400;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+        }
+        button:active {
+            transform: translateY(0);
+            box-shadow: none;
+        }
+        #qrcode {
+            margin: 20px auto;
+            max-width: 300px;
+        }
+        #successMessage {
+            color: #2ecc71;
+            font-size: 16px;
+            margin: 15px 0;
+            display: none;
+        }
+        .loader {
+            display: none;
+            margin: 20px auto;
+            border: 4px solid #f3f3f3;
+            border-top: 4px solid #2196F3;
+            border-radius: 50%;
+            width: 30px;
+            height: 30px;
+            animation: spin 1s linear infinite;
+        }
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h2>QR Code Generator</h2>
+        <input type="url" id="link" placeholder="https://example.com" required>
+        <button onclick="generateQR()">Generate QR Code</button>
+        <div class="loader" id="loader"></div>
+        <p id="successMessage">QR Code Generated Successfully!</p>
+        <div id="qrcode"></div>
+        <button id="exportButton" onclick="exportQR()">Export as PNG</button>
+    </div>
+
+    <script>
+    let qrCode;
+    
+    async function generateQR() {
+        const linkInput = document.getElementById("link");
+        const qrContainer = document.getElementById("qrcode");
+        const successMessage = document.getElementById("successMessage");
+        const exportButton = document.getElementById("exportButton");
+        const loader = document.getElementById("loader");
+        
+        // Validate URL
+        try {
+            new URL(linkInput.value);
+        } catch {
+            alert("Please enter a valid URL");
+            return;
+        }
+
+        // Show loading indicator
+        loader.style.display = "block";
+        qrContainer.innerHTML = "";
+        successMessage.style.display = "none";
+        exportButton.style.display = "none";
+
+        try {
+            qrCode = new QRCodeStyling({
+                width: 300,
+                height: 300,
+                type: "canvas",
+                data: linkInput.value,
+                dotsOptions: {
+                    color: "#2c3e50",
+                    type: "rounded"
+                },
+                backgroundOptions: {
+                    color: "#ffffff"
+                },
+                cornersSquareOptions: {
+                    color: "#2196F3",
+                    type: "extra-rounded"
+                },
+                cornersDotOptions: {
+                    color: "#2196F3",
+                    type: "dot"
+                },
+                imageOptions: {
+                    crossOrigin: "anonymous",
+                    margin: 8
+                },
+                qrOptions: {
+                    errorCorrectionLevel: "H"
+                }
+            });
+
+            await qrCode.append(qrContainer);
+            successMessage.style.display = "block";
+            exportButton.style.display = "inline-block";
+        } catch (error) {
+            console.error("QR Generation Error:", error);
+            alert("Error generating QR code. Please try again.");
+        } finally {
+            loader.style.display = "none";
+        }
+    }
+    
+    async function exportQR() {
+        if (!qrCode) {
+            alert("Please generate a QR code first");
+            return;
+        }
+        
+        try {
+            const blob = await qrCode.getRawData("png");
+            if (blob) {
+                const url = URL.createObjectURL(blob);
+                const link = document.createElement("a");
+                link.href = url;
+                link.download = `qr-code-${Date.now()}.png`; // Fixed download filename
+                document.body.appendChild(link);
+                link.click();
+                document.body.removeChild(link);
+                URL.revokeObjectURL(url);
+            }
+        } catch (error) {
+            console.error("Export Error:", error);
+            alert("Error exporting QR code. Please try again.");
+        }
+    }
+
+    // Add enter key support
+    document.getElementById("link").addEventListener("keypress", (e) => {
+        if (e.key === "Enter") generateQR();
+    });
+    </script>
+</body>
+</html>
