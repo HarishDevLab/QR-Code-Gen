@@ -3,7 +3,7 @@
 A simple and user-friendly QR Code Generator web application that lets users instantly create QR codes from any text or URL — with the option to download them as PNG images.
 
 ## 🔗 Live Demo
-[Visit the QR Code Generator](https://yourdomain.com)  
+[Visit the QR Code Generator](https://harishdevlab.github.io/QR-Code-Gen/)  
 
 
 ---
