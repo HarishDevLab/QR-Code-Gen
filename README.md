@@ -8,6 +8,11 @@ A simple and user-friendly QR Code Generator web application that lets users ins
 
 ---
 
+## Support This Project
+
+[Buy Me a Coffee](https://buymeacoffee.com/harishdevlab)  
+[Support via UPI](https://drive.google.com/file/d/153n7zxHg-srjOmtZEUESpnN_FlQbBKko/view?usp=sharing)
+
 ## 🚀 Features
 
 - ✅ Generate QR codes from any input text or URL
