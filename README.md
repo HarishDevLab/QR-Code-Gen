@@ -8,7 +8,7 @@ A simple and user-friendly QR Code Generator web application that lets users ins
 
 ---
 
-## Support This Project
+## Support Me
 
 <div align="center">
 
